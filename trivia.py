@@ -1,7 +1,8 @@
 import requests
 import random
+import time
 
-difficulty = ['easy', 'medium', 'hard', 'random']
+difficulty = ['random', 'easy', 'medium', 'hard']
 points_by_difficulty = {'easy': 1, 'medium': 2, 'hard': 3}
 
 
@@ -12,6 +13,12 @@ def get_categories():
     data = response.json()
     data.update({'trivia_categories': [{'id': 0, 'name': 'Random'}] + data['trivia_categories']})
     return data['trivia_categories']
+
+
+def get_amount_of_questions_per_category(category_id):
+    response = requests.get(f'https://opentdb.com/api_count.php?category={category_id}')
+    data = response.json()
+    return data['category_question_count']
 
 
 def choose_category(categories):   
@@ -72,14 +79,21 @@ def game_manager():
         current_player = game_status[1]
         
 
-def get_trivia(token, category, difficulty):
-    url = f'https://opentdb.com/api.php?amount=50&token={token}'
+def get_trivia(token, category, difficulty_choice):
+    question_amounts = get_amount_of_questions_per_category(category[0])
+
+    for option in difficulty:
+        if option == difficulty_choice.lower():
+            question_key = 'total_' + option + '_question_count'
+            amount_of_questions = int(question_amounts[question_key])
+            
+
+    url = f'https://opentdb.com/api.php?amount={amount_of_questions}&token={token}'
 
     if category[0] != 0:
-        url = f'{url}&category={category[0]}'  
-    if difficulty != 'random':
-        url = f'{url}&difficulty={difficulty}'
-
+        url = f'{url}&category={category[0]}'
+    if difficulty_choice != 'Random':
+        url = f'{url}&difficulty={difficulty_choice}'
     response = requests.get(url)
     data = response.json()
     return data['results']
@@ -126,9 +140,9 @@ def ask_questions(questions, players, points_to_win, current_player):
             print('\n' + 'Current points: ' + '\n')
             for player, points in players.items():
                 print(f'{player}: {points} points')
+            time.sleep(2)
     
     return False, current_player
-
 
 categories = get_categories()
 game_manager()
