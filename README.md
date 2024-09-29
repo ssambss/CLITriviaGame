@@ -22,7 +22,7 @@ This project is a command-line trivia quiz game that uses the Open Trivia Databa
 
 1. **Clone the repository**:
    ```bash
-   git clone <repository-url>
+   git clone https://github.com/ssambss/CLITriviaGame.git
    cd <repository-folder>
 
 2. **Install dependencies**:
