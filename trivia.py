@@ -69,10 +69,14 @@ def get_session_token() -> str:
 def get_trivia(token, category, difficulty_choice) -> list:   
     if category[0] != 0:
         question_amounts = get_amount_of_questions_per_category(category[0])    
-        for option in difficulty:
-            if option == difficulty_choice.lower():
-                question_key = 'total_' + option + '_question_count'
-                amount_of_questions = int(question_amounts[question_key])
+        if difficulty_choice == "random":
+            question_key = 'total_question_count'
+            amount_of_questions = int(question_amounts[question_key])
+        else:
+            for option in difficulty:
+                if option == difficulty_choice.lower():
+                    question_key = 'total_' + option + '_question_count'
+                    amount_of_questions = int(question_amounts[question_key])
 
     else:
         amount_of_questions = 50
@@ -115,7 +119,7 @@ def ask_questions(questions, players, points_to_win, current_player) -> tuple:
         player_answer = input('\n' + 'Enter your answer: ')
 
         if player_answer == str(options['Correct'][0]) or player_answer == str(options['Correct'][1]):
-            print('\n' + 'Correct!')    
+            print(f'\n' + 'Correct!' + ' Player ' + str(current_player) + ' gained ' + str(points_by_difficulty[question_difficulty]) + ' points.') 
             players[f'Player {current_player}'] += points_by_difficulty[question_difficulty]
 
             if players[f'Player {current_player}'] >= points_to_win:
