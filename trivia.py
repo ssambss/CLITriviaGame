@@ -124,7 +124,7 @@ def ask_questions(questions, players, points_to_win, current_player) -> tuple:
 
             if players[f'Player {current_player}'] >= points_to_win:
                 print(f'Player {current_player} wins!')
-                return True
+                return True, current_player
         else:
             print('\n' + 'Incorrect!' + '\n' + f'The correct answer was: {question["correct_answer"]}' + '\n')
         
